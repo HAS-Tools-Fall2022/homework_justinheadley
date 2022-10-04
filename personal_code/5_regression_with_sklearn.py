@@ -68,7 +68,7 @@ lm = LinearRegression()
 x = df_monthly[['tmax (deg c)']]
 y = df_monthly[['streamflow']]
 
-lm.fit(x, y )
+lm.fit(x, y)
 xfit = np.linspace(np.min(x), np.max(x), 20).reshape(-1, 1)
 yfit = lm.predict(xfit)
 
@@ -80,7 +80,7 @@ plt.semilogy()
 # %%
 log_lm = LinearRegression()
 x = df_monthly[['tmax (deg c)']]
-y = np.log(df_monthly[['streamflow']])
+ylog = np.log(df_monthly[['streamflow']])
 log_lm.fit(x, y )
 
 xfit = np.linspace(np.min(x), np.max(x), 20).reshape(-1, 1)
@@ -91,5 +91,15 @@ plt.plot(xfit, np.exp(yfit_log), color='maroon', label='fit on log values')
 plt.plot(xfit, yfit, color='darkgoldenrod', linestyle='--', label='fit on raw values')
 plt.legend()
 plt.semilogy()
+
+# %%
+log_score = log_lm.score(x, ylog)
+reg_score = lm.score(x, y)
+print(log_score, reg_score)
+
+# %%
+c = log_lm.coef_
+i = log_lm.intercept_
+print(c,i)
 
 # %%
