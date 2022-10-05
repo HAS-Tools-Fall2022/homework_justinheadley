@@ -40,10 +40,10 @@ def open_usgs_data(site, begin_date, end_date):
 #         and put it into a pandas dataframe called `df`
 
 #TODO: Your code here
-site = None
-begin_date = None
-end_date = None
-df = None
+site = '09506000'
+begin_date = '1992-10-03'
+end_date = '2002-10-03'
+df = open_usgs_data(site, begin_date, end_date)
 
 
 # %%
@@ -51,7 +51,8 @@ df = None
 #         dataframe called `weekly_df`
 
 #TODO: Your code here
-weekly_df = None
+weekly_df = df.resample('W').mean()
+print(weekly_df.head)
 
 
 # %%
@@ -61,9 +62,12 @@ weekly_df = None
 # Hint: Remember you can use `weekly_df.iloc` to index rows!
 
 #TODO: Your code here
-x = None
-y = None
-
+x = weekly_df.iloc[:-1] # beginning to end
+y = weekly_df.iloc[1:] # 2nd row to end
+print(x.shape)
+print(y.shape)
+print(x.head)
+print(y.head)
 
 # %%
 # Step 5: Verify that you can plot the data
@@ -80,7 +84,9 @@ plt.ylabel("Next week streamflow [cfs]")
 #         And use the `fit` function to map x -> y
 
 #TODO: Your code here
-full_regression = None
+full_regression = LinearRegression()
+
+full_regression.fit(x, y )
 # ...
 
 # `np.around` rounds numbers to given number of digits
@@ -101,7 +107,7 @@ print(f'The r^2 value is {r2}')
 x_sample = np.arange(0, 15000, 1000).reshape(-1, 1)
 
 #TODO: Your code here
-y_predicted = None
+y_predicted = full_regression.predict(x_sample)
 
 plt.scatter(x, y )
 plt.plot(x_sample, y_predicted, color='black', label='Regression line')
@@ -115,8 +121,8 @@ plt.legend()
 # Note this is similar to the `dayofyear` variable we've seen in class
 
 #TODO: Your code here
-weekofyear = None
-
+woy = weekly_df.index.isocalendar().week
+ 
 
 # %%
 # Step 9: Select out columns with this week's week of year
@@ -124,9 +130,13 @@ weekofyear = None
 # Note: This week's week of year is 38
 
 #TODO: Your code here
-this_week = None
-next_week = None
-following_week = None
+
+this_week = weekly_df[woy == 38]
+next_week = weekly_df[woy == 39]
+following_week = weekly_df[woy == 40]
+print(following_week)
+
+
 
 
 # %%
@@ -145,10 +155,16 @@ plt.ylabel('Future streamflow [cfs]')
 #          one that maps `this_week` to `following_week`
 
 #TODO: Your code here
-one_week_regression = None
+one_week_regression = LinearRegression()
+one_week_regression.fit =(this_week, next_week)
 # ...
-two_week_regression = None
+two_week_regression = LinearRegression()
+two_week_regression.fit(this_week, following_week)
 # ...
+
+# I can't get this to work, because it tells me that there's an inconsidtent number of samples
+# 10 for one list, versus 11 for the other. I don't even understand why there are only 10 or 11
+# shouldn't there be 30? Or maybe 28. 
 
 #%%
 # Step 12: Use these regression models to make a prediction!
@@ -169,5 +185,8 @@ print(f'Two week prediction: {two_week_prediction.flatten()[0]}')
 # https://github.com/HAS-Tools-Fall2022/forecasting22/tree/main/forecast_entries
 
 # CONGRATULATIONS! You finished!
+
+#nope
+
 
 # %%
